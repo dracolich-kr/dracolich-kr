@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Main">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>
+      </Extensions>
+    </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{4d43a6f2-90b9-46bd-9f77-2dc52af31b17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Thread\ThreadManager.cpp" />
+    <ClCompile Include="Framework\Thread\Thread.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Framework\Thread\ThreadManager.h" />
+    <ClInclude Include="Framework\Thread\Thread.h" />
+    <ClInclude Include="Pch.h" />
+    <ClInclude Include="Framework\SingleTon.h" />
+    <ClInclude Include="Framework\ObjectPool\ObjectPool.h" />
+    <ClInclude Include="Framework\ObjectPool\ObjectPool.hpp" />
+  </ItemGroup>
+</Project>
