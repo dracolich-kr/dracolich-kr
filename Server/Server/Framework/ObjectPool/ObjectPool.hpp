@@ -8,16 +8,18 @@ T* ObjectPool<T>::Alloc()
 	auto deque = m_buffer.find(id);
 	if (deque == m_buffer.end())
 	{
-		deque = m_buffer[id] = new ObjectBuffer<T>();
+		m_buffer[id] = new ObjectBuffer<T>();
+		deque = m_buffer.find(id);
 	}
-
-	return deque->second->pop_back();
+	
+	return deque->second->Pop();
 }
 
 template<class T>
-void ObjectPool<T>::DeAlloc(void* free)
+void ObjectPool<T>::DeAlloc(T* free)
 {
-	ObjectHeader* header = free - sizeof(ObjectHeader);
+	BYTE* buffer = (BYTE*)free;
+	ObjectHeader* header = (ObjectHeader*)(buffer - sizeof(ObjectHeader));
 
 	auto deque = m_buffer.find(header->m_threadid);
 	if (deque == m_buffer.end())
@@ -26,5 +28,20 @@ void ObjectPool<T>::DeAlloc(void* free)
 		return;
 	}
 
-	deque->second->push_back(free);
+	deque->second->Push(free);
 }
+
+template<class T>
+T* SingleObjectPool<T>::Alloc()
+{
+	std::lock_guard<std::mutex> guard(m_mutex);
+	return m_buffer.Pop();
+}
+
+template<class T>
+void SingleObjectPool<T>::DeAlloc(T* free)
+{
+	std::lock_guard<std::mutex> guard(m_mutex);
+	return m_buffer.Push(free);
+}
+

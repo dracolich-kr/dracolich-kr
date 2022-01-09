@@ -5,10 +5,9 @@
 enum class ThreadType
 {
 	None = 0
-	, Database
-	, Network
-	, Game
-	, Logger
+	, Test
+	, SingleTest
+	, DefaultTest
 };
 
 enum class ThreadState
@@ -42,6 +41,7 @@ public:
 	void Run();
 	virtual void Work() {};
 
+	std::thread& GetThread() { return m_thread; }
 private:
 	const ThreadType m_type = ThreadType::None;
 

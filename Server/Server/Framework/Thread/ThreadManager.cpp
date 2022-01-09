@@ -1,14 +1,14 @@
 #include "ThreadManager.h"
+#include <Logic/TestThread.h>
 
-
-ErrorResult ThreadManager::AddThread(const ThreadType type)
+PThread ThreadManager::AddThread(const ThreadType type)
 {
 	PThread thread = create(type);
-	IF_RETURN(thread == nullptr, 1);
+	IF_RETURN(thread == nullptr, nullptr);
 
 	m_threadMap.emplace(thread->GetIndex(), thread);
 
-	return 0;
+	return thread;
 }
 
 PThread ThreadManager::create(ThreadType type)
@@ -17,9 +17,19 @@ PThread ThreadManager::create(ThreadType type)
 
 	switch (type)
 	{
-	case ThreadType::None:
+	case ThreadType::Test:
 	{
-		thread = std::make_shared<Thread>(type);
+		thread = std::make_shared<TestThread>();
+	}
+	break;
+	case ThreadType::SingleTest:
+	{
+		thread = std::make_shared<TestSingleThread>();
+	}
+	break;
+	case ThreadType::DefaultTest:
+	{
+		thread = std::make_shared<TestDefaultThread>();
 	}
 	break;
 	default:

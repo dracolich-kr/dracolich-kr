@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Pch.h>
+#include <mutex>
 
 using ObjectIndex = int;
 using ThreadId = DWORD;
@@ -12,7 +13,7 @@ struct ObjectHeader
 };
 
 template<class T, size_t BLOCK_SIZE = 1024>
-class ObjectBuffer : private std::deque<T>
+class ObjectBuffer 
 {
 public:
 	ObjectBuffer() 
@@ -22,37 +23,42 @@ public:
 
 	T* Pop()
 	{
-		if (this->empty() == true)
+		if (m_buffer.empty() == true)
 			allocate();
 
 		m_use_count++;
-		return this->pop_front();
+		BYTE* buffer = nullptr;
+		m_buffer.try_pop(buffer);
+		
+		return (T*)buffer;
 	}
 
-	void PushBack(T* block)
+	void Push(T* block)
 	{
 		m_use_count--;
-		this->push_back(block);
+		m_buffer.push((BYTE*)block);
 	}
 
 private:
 	void allocate()
 	{
 		BYTE* page = new BYTE[m_alloc_size * BLOCK_SIZE];
-		
+		ZeroMemory(page, m_alloc_size * BLOCK_SIZE);
+		BYTE* buffer = page;
+
 		for (int index = 0; index < BLOCK_SIZE; ++index)
 		{
-			BYTE* buffer = page;
 			ObjectHeader* header = (ObjectHeader*)buffer;
 			header->m_threadid = (int)GetCurrentThreadId();
 			buffer += sizeof(ObjectHeader);
-			this->push_back(buffer);
 
-			page += m_alloc_size;
+			m_buffer.push((BYTE*)buffer);
+			buffer += sizeof(sizeof(T));
 		}
 	}
 
 private:
+	concurrency::concurrent_queue<BYTE*> m_buffer;
 	int m_use_count = 0;
 	int m_alloc_size = 0;
 };
@@ -65,11 +71,24 @@ public:
 	virtual ~ObjectPool() {}
 
 	T* Alloc();
-	void DeAlloc(void *free);
+	void DeAlloc(T *free);
 
 private:
 	concurrency::concurrent_unordered_map<ThreadId, ObjectBuffer<T>*> m_buffer;
-	int m_pool_index = 0;
+};
+
+template<class T>
+class SingleObjectPool
+{
+public:
+	SingleObjectPool() {}
+	virtual ~SingleObjectPool() {}
+
+	T* Alloc();
+	void DeAlloc(T* free);
+private:
+	ObjectBuffer<T> m_buffer;
+	std::mutex m_mutex;
 };
 
 #include "ObjectPool.hpp"

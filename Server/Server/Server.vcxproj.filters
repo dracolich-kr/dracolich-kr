@@ -20,6 +20,7 @@
     </ClCompile>
     <ClCompile Include="Framework\Thread\ThreadManager.cpp" />
     <ClCompile Include="Framework\Thread\Thread.cpp" />
+    <ClCompile Include="Logic\TestThread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Thread\ThreadManager.h" />
@@ -28,5 +29,7 @@
     <ClInclude Include="Framework\SingleTon.h" />
     <ClInclude Include="Framework\ObjectPool\ObjectPool.h" />
     <ClInclude Include="Framework\ObjectPool\ObjectPool.hpp" />
+    <ClInclude Include="Framework\TickCounter.h" />
+    <ClInclude Include="Logic\TestThread.h" />
   </ItemGroup>
 </Project>

@@ -8,6 +8,8 @@
 #include <list>
 #include <deque>
 #include <concurrent_unordered_map.h>
+#include <concurrent_queue.h>
+
 
 using ThreadIndex = INT32;
 using ErrorResult = INT32;

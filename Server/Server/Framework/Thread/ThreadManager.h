@@ -4,14 +4,14 @@
 #include <Framework/SingleTon.h>
 
 class ThreadManager 
-	: Singleton<ThreadManager>
+	: public Singleton<ThreadManager>
 {
 	friend Singleton<ThreadManager>;
 	ThreadManager() {}
 
 public:
 	virtual ~ThreadManager() {}
-	ErrorResult AddThread(const ThreadType type);
+	PThread AddThread(const ThreadType type);
 
 private:
 	PThread create(ThreadType type);
